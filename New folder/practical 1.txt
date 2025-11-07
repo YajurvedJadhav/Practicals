@@ -1,0 +1,72 @@
+(a) Write a program to store roll numbers of student in array who attended a training program in random order.
+Write a function for searching whether a particular student attended a training program or not, using Linear
+search.
+
+#include <iostream>
+using namespace std;
+bool linearSearch(int arr[], int n, int key) {
+for (int i = 0; i < n; i++) {
+if (arr[i] == key) {
+return true;
+}
+}
+return false;
+}
+int main() {
+int n;
+cout << "Enter number of students: ";
+cin >> n;
+int arr[100];
+cout << "Enter roll numbers (in random order): ";
+for (int i = 0; i < n; i++) {
+cin >> arr[i];
+}
+int key;
+cout << "Enter roll number to search: ";
+cin >> key;
+if (linearSearch(arr, n, key))
+cout << "Student attended the training program.\n";
+else
+cout << "Student did NOT attend the training program.\n";
+return 0;
+}
+
+(b) Write a program to store roll numbers of student array who attended training programs in sorted order. Write a
+function for searching whether a particular student attended a training program or not, using Binary search.
+
+#include <iostream>
+using namespace std;
+bool binarySearch(int arr[], int n, int key) {
+int low = 0, high = n - 1;
+while (low <= high) {
+int mid = (low + high) / 2;
+if (arr[mid] == key) {
+return true;
+}
+else if (arr[mid] < key) {
+low = mid + 1;
+}
+else {
+high = mid - 1;
+}
+}
+return false;
+}
+int main() {
+int n;
+cout << "Enter number of students: ";
+cin >> n;
+int arr[100];
+cout << "Enter roll numbers (in sorted order): ";
+for (int i = 0; i < n; i++) {
+cin >> arr[i];
+}
+int key;
+cout << "Enter roll number to search: ";
+cin >> key;
+if (binarySearch(arr, n, key))
+cout << "Student attended the training program.\n";
+else
+cout << "Student did NOT attend the training program.\n";
+return 0;
+}

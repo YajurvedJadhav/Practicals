@@ -1,0 +1,68 @@
+(a) Pizza parlor accepting maximum M orders. Orders are served on a first come first served basis.
+Queues are frequently used in computer programming, and a typical example is the creation of a
+job queue by an operating system. If the operating system does not use priorities, then the jobs are
+processed in the order they enter the system. Write a program for simulating job queue. Write
+functions to add jobs and delete jobs from the queue.
+
+#include <iostream>
+using namespace std;
+#define MAX 5
+int queue[MAX], front = -1, rear = -1;
+bool isFull() {
+return (rear == MAX - 1);
+}
+bool isEmpty() {
+return (front == -1 || front > rear);
+}
+void addJob(int job) {
+if (isFull()) {
+cout << "Queue is full. Cannot accept more orders.\n";
+return;
+}
+if (front == -1) front = 0;
+queue[++rear] = job;
+cout << "Order " << job << " added.\n";
+}
+void deleteJob() {
+if (isEmpty()) {
+cout << "Queue is empty. No orders to serve.\n";
+return;
+}
+cout << "Order " << queue[front++] << " served.\n";
+}
+void displayQueue() {
+if (isEmpty()) {
+cout << "Queue is empty.\n";
+return;
+}
+cout << "Current Orders: ";
+for (int i = front; i <= rear; i++)
+cout << queue[i] << " ";
+cout << endl;
+}
+int main() {
+int choice, job;
+do {
+cout << "\n1. Add Order\n2. Serve Order\n3. Display Orders\n4. Exit\nEnter choice: ";
+cin >> choice;
+switch (choice) {
+case 1:
+cout << "Enter Order ID: ";
+cin >> job;
+addJob(job);
+break;
+case 2:
+deleteJob();
+break;
+case 3:
+displayQueue();
+break;
+case 4:
+cout << "Exiting...\n";
+break;
+default:
+cout << "Invalid choice.\n";
+}
+} while (choice != 4);
+return 0;
+}

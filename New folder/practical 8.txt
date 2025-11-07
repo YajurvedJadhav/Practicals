@@ -1,0 +1,95 @@
+(a) Beginning with an empty Binary Search Tree (BST), construct a binary search tree by inserting the
+values in the order given. After constructing the tree, perform the following operations:
+i. Insert a new node
+ii. Find the number of nodes in the longest path from root
+iii. Find the minimum data value found in the tree
+iv. Change the tree so that the roles of the left and right pointers are swapped at every
+node (Mirror of tree)
+v. Search a value in the tree
+
+#include <iostream>
+using namespace std;
+struct Node {
+int data;
+Node* left;
+Node* right;
+};
+Node* createNode(int data) {
+Node* newNode = new Node;
+newNode->data = data;
+newNode->left = newNode->right = nullptr;
+return newNode;
+}
+Node* insert(Node* root, int data) {
+if (root == nullptr) return createNode(data);
+if (data < root->data)
+root->left = insert(root->left, data);
+else if (data > root->data)
+root->right = insert(root->right, data);
+return root;
+}
+void inorder(Node* root) {
+if (root != nullptr) {
+inorder(root->left);
+cout << root->data << " ";
+inorder(root->right);
+}
+}
+int height(Node* root) {
+if (root == nullptr) return 0;
+int leftH = height(root->left);
+int rightH = height(root->right);
+return max(leftH, rightH) + 1;
+}
+int findMin(Node* root) {
+Node* current = root;
+while (current && current->left != nullptr)
+current = current->left;
+return current->data;
+}
+void mirror(Node* root) {
+if (root == nullptr) return;
+mirror(root->left);
+mirror(root->right);
+Node* temp = root->left;
+root->left = root->right;
+root->right = temp;
+}
+boolsearchTree(Node* root, int key) {
+if (root == nullptr) return false;
+if (root->data == key) return true;
+return searchTree(root->left, key) || searchTree(root->right, key);
+}
+int main() {
+Node* root = nullptr;
+int n, value;
+cout << "Enter number of initial nodes: ";
+cin >> n;
+cout << "Enter values: ";
+for (int i = 0; i < n; i++) {
+cin >> value;
+root = insert(root, value);
+}
+cout << "Inorder Traversal of BST: ";
+inorder(root);
+cout << endl;
+cout << "Enter value to insert: ";
+cin >> value;
+root = insert(root, value);
+cout << "Inorder Traversal after insertion: ";
+inorder(root);
+cout << endl;
+cout << "Number of nodes in longest path (Height): " << height(root) << endl;
+cout << "Minimum value in BST: " << findMin(root) << endl;
+mirror(root);
+cout << "Inorder Traversal of Mirror Tree: ";
+inorder(root);
+cout << endl;
+cout << "Enter value to search: ";
+cin >> value;
+if (searchTree(root, value))
+cout << value << " found in the tree." << endl;
+else
+cout << value << " not found in the tree." << endl;
+return 0;
+}

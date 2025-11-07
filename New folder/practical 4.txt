@@ -1,0 +1,116 @@
+(a) Department of Computer Engineering has student's club named 'Pinnacle Club'. Students of Second,
+third and final year of department can be granted membership on request. Similarly, one may cancel
+the membership of club. First node is reserved for president of club and last node is reserved for
+secretary of club. Write C++ program to maintain club member‘s information using singly linked list.
+Store student PRN and Name. Write functions to
+i. Add and delete the members as well as president or even secretary.
+ii. Compute total number of members of club
+iii. Display members
+iv. Two linked lists exists for two divisions.
+v. Concatenate two lists
+
+#include <iostream>
+#include <string>
+using namespace std;
+const int SIZE = 10;
+struct Client {
+string name;
+string phone;
+bool occupied;
+Client() {
+name = "";
+phone = "";
+occupied = false;
+}
+};
+class HashTable {
+Client table[SIZE];
+int hash1(string key) {
+int sum = 0;
+for (char c : key) sum += c;
+return sum % SIZE;
+}
+int hash2(string key) {
+int sum = 0;
+for (char c : key) sum += c;
+return 7 - (sum % 7);
+}
+public:
+void insertLinear(string name, string phone) {
+int index = hash1(name);
+int start = index;
+while (table[index].occupied) {
+index = (index + 1) % SIZE;
+if (index == start) {
+cout << "Hash table full!\n";
+return;
+}
+}
+table[index].name = name;
+table[index].phone = phone;
+table[index].occupied = true;
+}
+void insertQuadratic(string name, string phone) {
+int index = hash1(name);
+int i = 0;
+while (table[(index + i * i) % SIZE].occupied) {
+i++;
+if (i == SIZE) {
+cout << "Hash table full!\n";
+return;
+}
+}
+index = (index + i * i) % SIZE;
+table[index].name = name;
+table[index].phone = phone;
+table[index].occupied = true;
+}
+void insertDoubleHash(string name, string phone) {
+int index = hash1(name);
+int step = hash2(name);
+int start = index;
+while (table[index].occupied) {
+index = (index + step) % SIZE;
+if (index == start) {
+cout << "Hash table full!\n";
+return;
+}
+}
+table[index].name = name;
+table[index].phone = phone;
+table[index].occupied = true;
+}
+void search(string name) {
+int index = hash1(name);
+int start = index;
+while (table[index].occupied) {
+if (table[index].name == name) {
+cout << "Found: " << table[index].phone << endl;
+return;
+}
+index = (index + 1) % SIZE;
+if (index == start) break;
+}
+cout << "Not found\n";
+}
+void display() {
+cout << "\nHash Table:\n";
+for (int i = 0; i < SIZE; i++) {
+if (table[i].occupied)
+cout << i << " -> " << table[i].name << ": " << table[i].phone << endl;
+else
+cout << i << " -> EMPTY\n";
+}
+}
+};
+int main() {
+HashTable ht;
+ht.insertLinear("Lisha", "12345");
+ht.insertLinear("Tanuja", "67890");
+ht.insertQuadratic("Nikita", "54321");
+ht.insertDoubleHash("Shubhashree", "98765");
+ht.display();
+ht.search("Lisha");
+ht.search("Nikita");
+return 0;
+}

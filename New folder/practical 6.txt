@@ -1,0 +1,77 @@
+(a) Implement a program for expression conversion as infix to postfix and its evaluation using stack based
+on given conditions:
+i. Operands and operators, both must be single characters.
+ii. Input Postfix expression must be in a desired format.
+iii. Only ”,”,” and operators are expected.
+
+#include <iostream>
+#include <stack>
+#include <cctype>
+#include <cmath>
+using namespace std;
+int precedence(char c) {
+if(c == '^') return 3;
+else if(c == '*' || c == '/') return 2;
+else if(c == '+' || c == '-') return 1;
+else return -1;
+}
+string infixToPostfix(string infix) {
+stack<char> st;
+string postfix = "";
+for(char c : infix) {
+if(isalnum(c)) {
+postfix += c;
+}
+else if(c == '(') {
+st.push(c);
+}
+else if(c == ')') {
+while(!st.empty() && st.top() != '(') {
+postfix += st.top();
+st.pop();
+}
+st.pop();
+}
+else {
+while(!st.empty() && precedence(st.top()) >= precedence(c)) {
+postfix += st.top();
+st.pop();
+}
+st.push(c);
+}
+}
+while(!st.empty()) {
+postfix += st.top();
+st.pop();
+}
+return postfix;
+}
+int evalPostfix(string postfix) {
+stack<int> st;
+for(char c : postfix) {
+if(isdigit(c)) {
+st.push(c - '0');
+}
+else {
+int val2 = st.top(); st.pop();
+int val1 = st.top(); st.pop();
+switch(c) {
+case '+': st.push(val1 + val2); break;
+case '-': st.push(val1 - val2); break;
+case '*': st.push(val1 * val2); break;
+case '/': st.push(val1 / val2); break;
+case '^': st.push(pow(val1, val2)); break;
+}
+}
+}
+return st.top();
+}
+int main() {
+string infix;
+cout << "Enter Infix Expression: ";
+cin >> infix;
+string postfix = infixToPostfix(infix);
+cout << "Postfix Expression: " << postfix << endl;
+cout << "Postfix Evaluation: " << evalPostfix(postfix) << endl;
+return 0;
+}

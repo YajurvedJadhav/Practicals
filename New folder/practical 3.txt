@@ -1,0 +1,154 @@
+Telephone Book Database
+#include <iostream>
+#include <string>
+using namespace std;
+const int SIZE = 10; // Hash table size (can be increased)
+struct Client {
+ string name;
+ string phone;
+ bool isOccupied;
+ Client() {
+ name = "";
+ phone = "";
+ isOccupied = false;
+ }
+};
+class HashTable {
+ Client table[SIZE];
+public:
+ int hashFunc(string key) {
+ int sum = 0;
+ for (char c : key)
+ sum += c;
+ return sum % SIZE;
+ }
+ // Linear Probing Insert
+ void insertLinear(string name, string phone) {
+ int index = hashFunc(name);
+ int start = index;
+ while (table[index].isOccupied) {
+ index = (index + 1) % SIZE;
+ if (index == start) {
+ cout << "Hash Table is full!\n";
+ return;
+ }
+ }
+ table[index].name = name;
+ table[index].phone = phone;
+ table[index].isOccupied = true;
+ }
+ // Quadratic Probing Insert
+ void insertQuadratic(string name, string phone) {
+ int index = hashFunc(name);
+ int i = 1;
+ while (table[index].isOccupied) {
+ index = (index + i * i) % SIZE;
+ i++;
+ if (i >= SIZE) {
+ cout << "Hash Table is full!\n";
+ return;
+ }
+ }
+ table[index].name = name;
+ table[index].phone = phone;
+ table[index].isOccupied = true;
+ }
+ // Double Hashing Insert
+ int hashFunc2(string key) {
+ int sum = 0;
+ for (char c : key)
+ sum += c;
+ return 7 - (sum % 7); // Secondary hash
+ }
+ void insertDoubleHash(string name, string phone) {
+ int index = hashFunc(name);
+ int step = hashFunc2(name);
+ int start = index;
+ while (table[index].isOccupied) {
+ index = (index + step) % SIZE;
+ if (index == start) {
+ cout << "Hash Table is full!\n";
+ return;
+ }
+ }
+ table[index].name = name;
+ table[index].phone = phone;
+ table[index].isOccupied = true;
+ }
+ // Search
+ void search(string name) {
+ int index = hashFunc(name);
+ int start = index;
+ int step = hashFunc2(name);
+ int i = 0;
+ while (table[index].isOccupied) {
+ if (table[index].name == name) {
+ cout << "Found: " << table[index].name << " -> " << table[index].phone << endl;
+ return;
+ }
+ // Try next index (linear fallback in search for demonstration)
+ index = (index + 1) % SIZE;
+ if (index == start) break;
+ }
+ cout << "Client not found!\n";
+ }
+ // Display
+ void display() {
+ cout << "\nHash Table contents:\n";
+ for (int i = 0; i < SIZE; i++) {
+ if (table[i].isOccupied)
+ cout << i << ": " << table[i].name << " -> " << table[i].phone << endl;
+ else
+ cout << i << ": [empty]\n";
+ }
+ }
+};
+int main() {
+ HashTable ht;
+ int choice;
+ string name, phone;
+ cout << "Telephone Book using Hash Table\n";
+ do {
+ cout << "\nMenu:\n";
+ cout << "1. Insert (Linear Probing)\n";
+ cout << "2. Insert (Quadratic Probing)\n";
+ cout << "3. Insert (Double Hashing)\n";
+ cout << "4. Search Client\n";
+ cout << "5. Display Table\n";
+ cout << "0. Exit\n";
+ cout << "Enter choice: ";
+ cin >> choice;
+ switch (choice) {
+ case 1:
+ cout << "Enter client name: ";
+ cin >> name;
+ cout << "Enter phone number: ";
+ cin >> phone;
+ ht.insertLinear(name, phone);
+ break;
+ case 2:
+ cout << "Enter client name: ";
+ cin >> name;
+ cout << "Enter phone number: ";
+ cin >> phone;
+ ht.insertQuadratic(name, phone);
+ break;
+ case 3:
+ cout << "Enter client name: ";
+ cin >> name;
+ cout << "Enter phone number: ";
+ cin >> phone;
+ ht.insertDoubleHash(name, phone);
+ break;
+ case 4:
+ cout << "Enter name to search: ";
+ cin >> name;
+ ht.search(name);
+ break;
+ case 5:
+ ht.display();
+ break;
+ }
+ } while (choice != 0);
+ return 0;
+}
